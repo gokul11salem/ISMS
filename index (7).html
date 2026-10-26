@@ -1,0 +1,1320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Great Global Synergy | Refinery &amp; Packing Plant Inventory System</title>
+<style>
+  :root{
+    --navy:#0F172A;
+    --navy-2:#1E293B;
+    --gold:#D97706;
+    --gold-light:#F59E0B;
+    --gold-dim:#FEF3E2;
+    --bg:#F8FAFC;
+    --card:#FFFFFF;
+    --text:#1E293B;
+    --muted:#64748B;
+    --border:#E2E8F0;
+    --danger:#DC2626;
+    --danger-bg:#FEF2F2;
+    --success:#16A34A;
+    --success-bg:#F0FDF4;
+    --radius:14px;
+    --shadow: 0 1px 3px rgba(15,23,42,0.08), 0 1px 2px rgba(15,23,42,0.04);
+    --shadow-hover: 0 10px 24px rgba(15,23,42,0.12);
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:'Inter','Segoe UI',system-ui,-apple-system,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;}
+  img{max-width:100%;}
+  svg{display:block;}
+
+  header.topbar{
+    background:linear-gradient(135deg,var(--navy) 0%, #060B16 100%);
+    color:#fff;padding:16px 28px;display:flex;align-items:center;justify-content:space-between;
+    box-shadow:0 2px 14px rgba(0,0,0,0.3);flex-wrap:wrap;gap:12px;border-bottom:3px solid var(--gold);
+  }
+  .brand{display:flex;align-items:center;gap:14px;}
+  .brand .logo{width:46px;height:46px;border-radius:10px;background:linear-gradient(135deg,var(--gold-light),var(--gold));
+    display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(217,119,6,0.35);}
+  .brand h1{font-size:19px;margin:0;letter-spacing:0.2px;font-weight:700;}
+  .brand p{margin:0;font-size:11.5px;color:#94A3B8;letter-spacing:0.4px;text-transform:uppercase;}
+
+  nav.tabs{display:flex;gap:6px;flex-wrap:wrap;}
+  nav.tabs button{background:rgba(255,255,255,0.06);color:#CBD5E1;border:1px solid rgba(255,255,255,0.1);
+    padding:10px 16px;border-radius:10px;font-size:13.5px;cursor:pointer;display:flex;align-items:center;gap:8px;
+    transition:all .18s ease;font-weight:600;}
+  nav.tabs button:hover{background:rgba(255,255,255,0.12);color:#fff;}
+  nav.tabs button.active{background:var(--gold);color:#1a1305;border-color:var(--gold);box-shadow:0 4px 12px rgba(217,119,6,0.4);}
+  nav.tabs button svg{width:17px;height:17px;}
+
+  main{max-width:1340px;margin:0 auto;padding:24px 20px 64px;}
+  .view{display:none;animation:fadeIn .2s ease;}
+  .view.active{display:block;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(5px);}to{opacity:1;transform:translateY(0);}}
+
+  h2.section-title{font-size:20px;color:var(--navy);margin:4px 0 18px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-weight:700;}
+  h2.section-title small{font-size:12.5px;color:var(--muted);font-weight:500;}
+  h3.sub-title{font-size:14.5px;color:var(--navy);margin:0 0 12px;font-weight:700;display:flex;align-items:center;gap:8px;}
+  h3.sub-title svg{width:17px;height:17px;color:var(--gold);flex-shrink:0;}
+
+  .brand-filter-row{display:flex;align-items:center;gap:10px;margin:0 0 18px;flex-wrap:wrap;}
+  .brand-filter-row label{margin:0;font-size:12.5px;font-weight:700;color:var(--navy);white-space:nowrap;text-transform:uppercase;letter-spacing:0.3px;}
+  .brand-filter-row select{max-width:230px;}
+
+  .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px;margin-bottom:22px;}
+  .kpi-card{background:var(--card);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);
+    display:flex;flex-direction:column;gap:8px;border:1px solid var(--border);border-top:3px solid var(--gold);
+    transition:all .15s ease;position:relative;}
+  .kpi-card:hover{box-shadow:var(--shadow-hover);transform:translateY(-2px);}
+  .kpi-card.low{border-top-color:var(--danger);}
+  .kpi-card .icon-wrap{width:36px;height:36px;border-radius:10px;background:var(--gold-dim);color:var(--gold);
+    display:flex;align-items:center;justify-content:center;}
+  .kpi-card.low .icon-wrap{background:var(--danger-bg);color:var(--danger);}
+  .kpi-card .value{font-size:19px;font-weight:800;color:var(--navy);line-height:1.3;}
+  .kpi-card .label{font-size:12px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:0.3px;}
+  .kpi-card .sub{font-size:11.5px;color:var(--muted);}
+  .status-badge{position:absolute;top:16px;right:16px;font-size:9.5px;padding:3px 8px;border-radius:6px;font-weight:700;
+    letter-spacing:0.4px;text-transform:uppercase;background:var(--danger);color:#fff;}
+
+  .breakdown-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-bottom:22px;}
+  .breakdown-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px 18px;border:1px solid var(--border);}
+  .breakdown-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:12.5px;gap:8px;}
+  .breakdown-row:last-child{border-bottom:none;}
+  .breakdown-row .name{color:var(--text);font-weight:600;display:flex;align-items:center;gap:8px;min-width:0;}
+  .breakdown-row .name span.txt{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .breakdown-row .val{font-weight:700;color:var(--navy);white-space:nowrap;}
+  .status-dot{width:8px;height:8px;border-radius:50%;background:var(--success);flex-shrink:0;}
+  .status-dot.low{background:var(--danger);}
+  .empty-mini{color:var(--muted);font-size:12.5px;padding:6px 0;}
+
+  .panel{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px;border:1px solid var(--border);margin-bottom:22px;}
+  .sim-steps{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px;}
+  .sim-row-list{display:flex;flex-direction:column;gap:10px;margin-bottom:12px;}
+  .sim-row{display:flex;gap:10px;align-items:center;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:10px;}
+  .sim-row select{flex:2;}
+  .sim-row input{flex:1;}
+  .icon-btn{width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:#fff;color:var(--danger);
+    display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:all .15s ease;}
+  .icon-btn:hover{background:var(--danger-bg);}
+  .analysis-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:16px;}
+  .analysis-item{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 14px;}
+  .analysis-item .a-label{font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:0.3px;margin-bottom:4px;}
+  .analysis-item .a-value{font-size:14.5px;font-weight:700;color:var(--navy);}
+  .analysis-item .a-value.negative{color:var(--danger);}
+  .status-banner{margin-top:16px;border-radius:10px;padding:16px 18px;display:flex;align-items:center;gap:14px;
+    border:1px solid var(--success);background:var(--success-bg);}
+  .status-banner.bad{border-color:var(--danger);background:var(--danger-bg);}
+  .status-banner .s-icon{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;
+    background:var(--success);color:#fff;}
+  .status-banner.bad .s-icon{background:var(--danger);}
+  .status-banner .s-text{font-size:13.5px;line-height:1.5;color:var(--navy);}
+  .status-banner .s-text ul{margin:6px 0 0;padding-left:18px;}
+
+  .toolbar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:16px;}
+  .btn{border:none;border-radius:10px;padding:11px 18px;font-size:13.5px;font-weight:700;cursor:pointer;
+    transition:all .12s ease;display:inline-flex;align-items:center;gap:8px;}
+  .btn:active{transform:scale(0.97);}
+  .btn svg{width:16px;height:16px;}
+  .btn-gold{background:var(--gold);color:#fff;box-shadow:0 4px 12px rgba(217,119,6,0.3);}
+  .btn-gold:hover{background:var(--gold-light);}
+  .btn-navy{background:var(--navy);color:#fff;box-shadow:0 4px 12px rgba(15,23,42,0.25);}
+  .btn-navy:hover{background:var(--navy-2);}
+  .btn-outline{background:#fff;color:var(--navy);border:1.5px solid var(--navy);}
+  .btn-outline:hover{background:var(--bg);}
+  .btn-large{padding:16px;font-size:14.5px;width:100%;border-radius:12px;justify-content:center;}
+  .btn-block{width:100%;justify-content:center;}
+
+  .stock-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px;}
+  .stock-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;
+    display:flex;flex-direction:column;gap:10px;border:1px solid var(--border);transition:all .15s ease;}
+  .stock-card:hover{box-shadow:var(--shadow-hover);transform:translateY(-2px);}
+  .stock-card.low{border-color:var(--danger);}
+  .stock-card .thumb{width:100%;height:100px;border-radius:10px;background:var(--bg);border:1px solid var(--border);
+    display:flex;align-items:center;justify-content:center;overflow:hidden;color:var(--gold);}
+  .stock-card .thumb svg{width:36px;height:36px;}
+  .stock-card .thumb img{width:100%;height:100%;object-fit:cover;}
+  .stock-card .tag-row{display:flex;gap:6px;flex-wrap:wrap;}
+  .stock-card .cat-tag{font-size:10px;font-weight:700;color:var(--navy);background:var(--bg);border:1px solid var(--border);padding:3px 8px;border-radius:6px;text-transform:uppercase;letter-spacing:0.3px;}
+  .stock-card .brand-tag{font-size:10px;font-weight:700;color:var(--gold);background:var(--gold-dim);padding:3px 8px;border-radius:6px;}
+  .stock-card .grade-tag{font-size:10px;font-weight:700;color:var(--navy-2);background:#EEF2FF;padding:3px 8px;border-radius:6px;}
+  .stock-card h4{margin:0;font-size:13.5px;color:var(--navy);font-weight:700;line-height:1.3;}
+  .stock-card .qty-row{display:flex;justify-content:space-between;align-items:baseline;}
+  .stock-card .qty{font-size:19px;font-weight:800;color:var(--navy);}
+  .stock-card .qty.small-text{font-size:13px;}
+  .stock-card .unit{font-size:11px;color:var(--muted);}
+  .stock-card .thresh{font-size:10.5px;color:var(--muted);}
+  .stock-card .low-tag{color:var(--danger);font-weight:700;font-size:11px;display:flex;align-items:center;gap:6px;}
+  .stock-card .low-tag svg{width:14px;height:14px;}
+  .stock-card .bom-note{font-size:10.5px;color:var(--muted);background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:6px 8px;line-height:1.4;}
+
+  .card-panel{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px;max-width:740px;margin:0 auto;border:1px solid var(--border);}
+  .form-group{margin-bottom:16px;}
+  label{display:block;font-size:12px;font-weight:700;color:var(--navy);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.3px;}
+  select, input[type=text], input[type=number], input[type=password], textarea{
+    width:100%;padding:11px 13px;border-radius:9px;border:1.5px solid var(--border);font-size:13.5px;
+    background:#fff;transition:border-color .15s ease;color:var(--text);font-family:inherit;}
+  select:focus, input:focus, textarea:focus{outline:none;border-color:var(--gold);}
+  .field-hint{font-size:11px;color:var(--muted);margin-top:5px;}
+  .inline-fields{display:flex;gap:10px;align-items:flex-start;}
+  .inline-fields > div{flex:1;}
+  .fieldset-box{border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:16px;background:var(--bg);}
+  .fieldset-box .fs-title{font-size:12px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:0.3px;margin-bottom:12px;}
+  .action-toggle{display:flex;gap:12px;}
+  .action-btn{flex:1;padding:18px 10px;border-radius:12px;border:1.5px solid var(--border);background:#fff;cursor:pointer;
+    text-align:center;font-weight:700;font-size:13.5px;transition:all .15s ease;display:flex;flex-direction:column;gap:8px;align-items:center;color:var(--muted);}
+  .action-btn svg{width:22px;height:22px;}
+  .action-btn.selected.in{border-color:var(--success);background:var(--success-bg);color:var(--success);}
+  .action-btn.selected.out{border-color:var(--danger);background:var(--danger-bg);color:var(--danger);}
+  .modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,0.6);display:none;align-items:center;justify-content:center;padding:20px;z-index:999;}
+  .modal-overlay.active{display:flex;}
+  .modal-box{background:#fff;border-radius:var(--radius);padding:24px;max-width:540px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow-hover);}
+  .modal-box h3{margin-top:0;color:var(--navy);font-weight:700;display:flex;align-items:center;gap:10px;}
+  .modal-box .modal-sub{color:var(--muted);font-size:12.5px;margin-top:-10px;margin-bottom:16px;}
+  .close-x{float:right;background:none;border:none;cursor:pointer;color:var(--muted);padding:4px;}
+  .close-x svg{width:18px;height:18px;}
+  .upload-box{border:1.5px dashed var(--gold);border-radius:10px;padding:16px;text-align:center;color:var(--muted);cursor:pointer;
+    background:var(--gold-dim);display:flex;flex-direction:column;align-items:center;gap:8px;font-size:12.5px;}
+  .upload-box svg{width:26px;height:26px;color:var(--gold);}
+  .upload-preview{width:76px;height:76px;border-radius:8px;object-fit:cover;margin-top:8px;}
+  .toast{position:fixed;bottom:22px;right:22px;background:var(--navy);color:#fff;padding:14px 18px;border-radius:10px;
+    box-shadow:0 10px 26px rgba(0,0,0,0.3);z-index:1200;display:flex;gap:10px;align-items:center;font-size:13.5px;max-width:360px;
+    animation:slideIn .22s ease;border-left:4px solid var(--gold);}
+  .toast.err{border-left-color:var(--danger);}
+  .toast svg{width:18px;height:18px;flex-shrink:0;}
+  @keyframes slideIn{from{transform:translateX(36px);opacity:0;}to{transform:translateX(0);opacity:1;}}
+
+  .filter-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
+  .filter-chip{padding:8px 15px;border-radius:8px;border:1.5px solid var(--border);background:#fff;cursor:pointer;font-size:12.5px;font-weight:700;color:var(--navy);}
+  .filter-chip.active{background:var(--navy);border-color:var(--navy);color:#fff;}
+  table.history{width:100%;border-collapse:collapse;background:#fff;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--border);}
+  table.history th{background:var(--navy);color:#fff;padding:11px 14px;text-align:left;font-size:11.5px;text-transform:uppercase;letter-spacing:0.3px;}
+  table.history td{padding:10px 14px;font-size:12.5px;border-bottom:1px solid var(--border);}
+  table.history tr:last-child td{border-bottom:none;}
+  .tag-in{color:var(--success);font-weight:700;}
+  .tag-out{color:var(--danger);font-weight:700;}
+  .empty-msg{text-align:center;color:var(--muted);padding:40px;font-size:13.5px;}
+  .export-row{display:flex;gap:12px;margin:18px 0;flex-wrap:wrap;}
+  footer{text-align:center;padding:24px;color:var(--muted);font-size:12px;}
+
+  @media print{
+    header.topbar, nav.tabs, .toolbar, .filter-row, .export-row, .no-print{display:none !important;}
+    #view-history{display:block !important;}
+    .view{display:none !important;}
+    #view-history.active{display:block !important;}
+    body{background:#fff;}
+  }
+  @media (max-width:1100px){ .sim-steps{grid-template-columns:1fr;} }
+  @media (max-width:640px){
+    header.topbar{flex-direction:column;align-items:flex-start;}
+    nav.tabs{width:100%;justify-content:space-between;}
+    nav.tabs button{flex:1;padding:9px 4px;font-size:11.5px;justify-content:center;}
+    nav.tabs button span{display:none;}
+    .action-toggle{flex-direction:column;}
+    .inline-fields{flex-direction:column;}
+    .sim-row{flex-wrap:wrap;}
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="logo">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0F172A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v6M8 10h8l1.5 4a4 4 0 0 1-1 4.2A6 6 0 0 1 12 20a6 6 0 0 1-4.5-1.8 4 4 0 0 1-1-4.2L8 10Z"/></svg>
+    </div>
+    <div>
+      <h1>Great Global Synergy</h1>
+      <p>Refinery &amp; Packing Plant Inventory System</p>
+    </div>
+  </div>
+  <nav class="tabs">
+    <button data-view="dashboard" class="tab-btn active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+      <span>Dashboard</span>
+    </button>
+    <button data-view="stock" class="tab-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8 12 3 3 8l9 5 9-5Z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg>
+      <span>Stock Management</span>
+    </button>
+    <button data-view="addnew" class="tab-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M12 8v8M8 12h8"/></svg>
+      <span>Add New Stock Item</span>
+    </button>
+    <button data-view="history" class="tab-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3h8l4 4v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z"/><path d="M9 10h6M9 14h6M9 18h3"/></svg>
+      <span>History &amp; Reports</span>
+    </button>
+  </nav>
+</header>
+
+<main>
+
+  <!-- ================= DASHBOARD ================= -->
+  <section id="view-dashboard" class="view active">
+    <h2 class="section-title">Dashboard <small>Live overview across the plant</small></h2>
+
+    <div class="brand-filter-row">
+      <label>Filter by Brand</label>
+      <select id="dashBrandFilter"></select>
+    </div>
+
+    <div class="kpi-grid" id="kpiGrid"></div>
+
+    <div class="breakdown-grid" id="breakdownGrid"></div>
+
+    <div class="panel" id="simPanel">
+      <h3 class="sub-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11 3 5l6-6"/><path d="M3 5h13a4 4 0 0 1 4 4v1"/></svg>
+        Order &amp; Packing Calculator
+      </h3>
+      <div class="sim-steps">
+        <div class="form-group">
+          <label>Step 1a — Brand</label>
+          <select id="simBrandSelect"></select>
+        </div>
+        <div class="form-group">
+          <label>Step 1b — Bulk Oil Grade</label>
+          <select id="simGradeSelect"></select>
+        </div>
+      </div>
+      <label>Step 2 — Requested Container / Bottle Quantities</label>
+      <div class="sim-row-list" id="simRowList"></div>
+      <button class="btn btn-outline" id="simAddRowBtn" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+        Add Container / Size
+      </button>
+
+      <div id="simAnalysisWrap"></div>
+    </div>
+  </section>
+
+  <!-- ================= STOCK MANAGEMENT ================= -->
+  <section id="view-stock" class="view">
+    <h2 class="section-title">Stock Management <small>All items in the warehouse — update quantities anytime</small></h2>
+
+    <div class="brand-filter-row">
+      <label>Filter by Brand</label>
+      <select id="stockBrandFilter"></select>
+    </div>
+
+    <div class="stock-grid" id="stockGrid"></div>
+  </section>
+
+  <!-- ================= ADD NEW STOCK ITEM (PIN protected) ================= -->
+  <section id="view-addnew" class="view">
+    <h2 class="section-title">Add New Stock Item <small>Manager access only — create new brands, grades or items</small></h2>
+    <div class="card-panel">
+      <div class="form-group">
+        <label>Item Name</label>
+        <input type="text" id="newItemName" placeholder="e.g. Alibaba Cooking Oil 1 Liter x 12 Bottles">
+      </div>
+
+      <div class="form-group">
+        <label>Brand Name</label>
+        <input type="text" id="newItemBrand" list="brandSuggestions" placeholder="e.g. Alibaba, Aladdin, Periuk Emas, Mayil">
+        <datalist id="brandSuggestions"></datalist>
+      </div>
+
+      <div class="form-group">
+        <label>Category</label>
+        <select id="newItemCategory">
+          <option value="bulk-oil">Bulk Oil (Raw Material — MT / KG)</option>
+          <option value="containers">Containers (Empty Bottles / Jerry Cans)</option>
+          <option value="labels">Labels</option>
+          <option value="cartons">Packing Cartons</option>
+          <option value="finished-goods">Finished Goods (Packed / Ready-to-Ship)</option>
+          <option value="custom">Custom Item</option>
+        </select>
+      </div>
+
+      <div class="form-group" id="gradeGroup" style="display:none;">
+        <label>Oil Grade / Type</label>
+        <input type="text" id="newItemGrade" list="gradeSuggestions" placeholder="e.g. Raw Cooking Oil, Prayer Oil, CP6, CP8">
+        <datalist id="gradeSuggestions"></datalist>
+      </div>
+
+      <div class="form-group" id="sizeGroup" style="display:none;">
+        <label>Size</label>
+        <select id="newItemSize">
+          <option value="500ml">500ml</option>
+          <option value="1L">1L</option>
+          <option value="1.2L">1.2L</option>
+          <option value="2L">2L</option>
+          <option value="5L">5L</option>
+          <option value="1kg">1kg</option>
+          <option value="2kg">2kg</option>
+          <option value="5kg">5kg</option>
+          <option value="10kg">10kg</option>
+          <option value="17kg">17kg</option>
+          <option value="20kg">20kg</option>
+          <option value="custom">Custom size...</option>
+        </select>
+      </div>
+      <div class="form-group" id="sizeCustomGroup" style="display:none;">
+        <label>Custom Size Label</label>
+        <input type="text" id="newItemSizeCustom" placeholder="e.g. 750ml">
+      </div>
+
+      <div class="form-group" id="capacityGroup" style="display:none;">
+        <label>Typical Oil Weight per Container (KG)</label>
+        <input type="number" step="0.001" id="newItemCapacity" placeholder="e.g. 0.912 for a 1L bottle">
+        <div class="field-hint">Used by the Order &amp; Packing Calculator to estimate oil requirements.</div>
+      </div>
+
+      <div class="form-group" id="cartonRatioGroup" style="display:none;">
+        <label>Bottles Held per Carton Box</label>
+        <input type="number" id="newItemCartonRatio" placeholder="e.g. 12">
+      </div>
+
+      <div class="fieldset-box" id="bomGroup" style="display:none;">
+        <div class="fs-title">Bill of Materials — Per Case / Unit Packed</div>
+        <div class="form-group">
+          <label>Bottles per Case</label>
+          <input type="number" id="newItemUnitsPerCase" placeholder="e.g. 12 (use 1 if sold individually)">
+        </div>
+        <div class="form-group">
+          <label>Oil Weight per Bottle (KG)</label>
+          <input type="number" step="0.001" id="newItemOilPerUnit" placeholder="e.g. 0.912">
+        </div>
+        <div class="form-group">
+          <label>Linked Empty Container</label>
+          <select id="newItemLinkedContainer"><option value="">— Select —</option></select>
+        </div>
+        <div class="form-group">
+          <label>Linked Label (optional)</label>
+          <select id="newItemLinkedLabel"><option value="">— None —</option></select>
+        </div>
+        <div class="form-group">
+          <label>Linked Carton (optional)</label>
+          <select id="newItemLinkedCarton"><option value="">— None —</option></select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label id="qtyLabel">Initial Quantity</label>
+        <div class="inline-fields">
+          <div><input type="number" step="0.001" id="newItemQty" placeholder="0"></div>
+          <div id="bulkOilEntryUnitGroup" style="display:none;max-width:130px;">
+            <select id="newItemQtyUnit"><option value="KG">KG</option><option value="MT">MT</option></select>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group" id="unitGroup">
+        <label>Unit</label>
+        <select id="newItemUnit">
+          <option value="Pieces">Pieces</option>
+          <option value="Boxes">Boxes</option>
+          <option value="Cases">Cases</option>
+          <option value="Units">Units</option>
+          <option value="KG">KG</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Low Stock Alert Threshold</label>
+        <input type="number" step="0.001" id="newItemThreshold" placeholder="e.g. 100">
+      </div>
+      <div class="form-group">
+        <label>Image (optional)</label>
+        <div class="upload-box" id="uploadBox">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/><path d="M7 9l5-5 5 5"/><path d="M12 4v13"/></svg>
+          Click to upload image
+          <input type="file" id="newItemImage" accept="image/*" style="display:none;">
+          <img id="uploadPreview" class="upload-preview" style="display:none;">
+        </div>
+      </div>
+      <button class="btn btn-gold btn-large" id="saveNewItemBtn">Save New Item</button>
+    </div>
+  </section>
+
+  <!-- ================= HISTORY ================= -->
+  <section id="view-history" class="view">
+    <h2 class="section-title">History &amp; Reports <small>Full transaction log — including BOM auto-deductions</small></h2>
+    <div class="filter-row no-print">
+      <div class="filter-chip active" data-range="today">Today</div>
+      <div class="filter-chip" data-range="week">Weekly</div>
+      <div class="filter-chip" data-range="month">Monthly</div>
+      <div class="filter-chip" data-range="1y">1 Year</div>
+      <div class="filter-chip" data-range="all">All</div>
+    </div>
+    <div class="export-row no-print">
+      <button class="btn btn-outline" id="exportCsvBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
+        Export to CSV
+      </button>
+      <button class="btn btn-outline" id="printPdfBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6"/><rect x="6" y="13" width="12" height="8"/><path d="M6 17H4a1 1 0 0 1-1-1v-5a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1h-2"/></svg>
+        Print / PDF Summary
+      </button>
+    </div>
+    <div id="historyTableWrap"></div>
+  </section>
+
+</main>
+
+<footer>&copy; <span id="yearNow"></span> Great Global Synergy — Refinery &amp; Packing Plant Inventory System</footer>
+
+<!-- PIN MODAL -->
+<div class="modal-overlay" id="pinModal">
+  <div class="modal-box" style="max-width:360px;text-align:center;">
+    <h3 style="justify-content:center;">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+      Manager Access Required
+    </h3>
+    <div class="modal-sub">Enter the manager PIN to add new stock items.</div>
+    <input type="password" id="pinInput" maxlength="4" inputmode="numeric" placeholder="Enter 4-digit PIN" style="text-align:center;font-size:20px;letter-spacing:8px;">
+    <div id="pinError" style="color:var(--danger);font-size:12.5px;margin-top:8px;display:none;">Incorrect PIN. Please try again.</div>
+    <button class="btn btn-gold btn-large" id="pinSubmitBtn" style="margin-top:16px;">Unlock</button>
+    <button class="btn btn-outline btn-large" id="pinCancelBtn" style="margin-top:10px;">Cancel</button>
+  </div>
+</div>
+
+<!-- UPDATE QUANTITY MODAL -->
+<div class="modal-overlay" id="updateQtyModal">
+  <div class="modal-box">
+    <button class="close-x" id="closeUpdateModal">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+    <h3 id="updateModalTitle">Update Quantity</h3>
+    <div class="modal-sub" id="updateModalSub"></div>
+
+    <div class="form-group">
+      <label>What happened?</label>
+      <div class="action-toggle">
+        <div class="action-btn in" data-action="in" id="updBtnIn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+          <span>Stock Added (+)</span>
+        </div>
+        <div class="action-btn out" data-action="out" id="updBtnOut">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+          <span>Stock Used / Packed (&minus;)</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label id="updQtyLabel">Quantity</label>
+      <div class="inline-fields">
+        <div><input type="number" step="0.001" id="updQty" min="0" placeholder="e.g. 100"></div>
+        <div id="updBulkOilUnitGroup" style="display:none;max-width:130px;">
+          <select id="updQtyUnit"><option value="KG">KG</option><option value="MT">MT</option></select>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Quick Reason / Note</label>
+      <input type="text" id="updNote" placeholder="e.g. Production run — Batch 12">
+    </div>
+
+    <div id="updAutoNote" class="status-banner" style="display:none;"></div>
+
+    <button class="btn btn-navy btn-large" id="updSubmitBtn" style="margin-top:16px;">Save Update</button>
+  </div>
+</div>
+
+<script>
+/* ============================= ICONS ============================= */
+const ICONS = {
+  oil:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v6M8 10h8l1.5 4a4 4 0 0 1-1 4.2A6 6 0 0 1 12 20a6 6 0 0 1-4.5-1.8 4 4 0 0 1-1-4.2L8 10Z"/></svg>',
+  bottle:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2h6M10 2v4l-3 4v10a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V10l-3-4V2"/><path d="M7 14h10"/></svg>',
+  label:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 12.6 12 21.2 2.8 12l8.6-8.6H20a1 1 0 0 1 1 1v7.9Z"/><circle cx="15" cy="8" r="1.4" fill="currentColor" stroke="none"/></svg>',
+  carton:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8 12 3 3 8l9 5 9-5Z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg>',
+  truck:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="6" width="14" height="11"/><path d="M15 9h4l3 3v5h-7z"/><circle cx="6" cy="19" r="2"/><circle cx="17.5" cy="19" r="2"/></svg>',
+  check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>',
+  alert:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>',
+  info:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg>',
+  item:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>',
+  trash:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>'
+};
+
+/* ============================= STATE ============================= */
+const STORAGE_KEY = 'ggs_inventory_state_v5';
+const DEFAULT_BRAND = 'Unassigned';
+const SHARED_BRAND = 'Shared';
+const MANAGER_PIN = localStorage.getItem('ggs_manager_pin') || '1234';
+
+function defaultState(){
+  return {
+    items: [
+      // Bulk Oil
+      {id:'oil-main', name:'Raw Cooking Oil / Prayer Oil', category:'bulk-oil', brand:SHARED_BRAND, grade:'Raw Cooking Oil / Prayer Oil', qty:7500, unit:'KG', threshold:1500, image:null},
+
+      // Containers (empty bottles / jerry cans)
+      {id:'cont-mayil-1l', name:'Mayil 1 Liter Bottle', category:'containers', brand:'Mayil', size:'1L', fillingCapacityKg:0.912, qty:1000, unit:'Pieces', threshold:150, image:null},
+      {id:'cont-mayil-1.2l', name:'Mayil 1.2 Liter Bottle', category:'containers', brand:'Mayil', size:'1.2L', fillingCapacityKg:1.094, qty:800, unit:'Pieces', threshold:150, image:null},
+      {id:'cont-mayil-2l', name:'Mayil 2 Liter Bottle', category:'containers', brand:'Mayil', size:'2L', fillingCapacityKg:1.824, qty:600, unit:'Pieces', threshold:120, image:null},
+      {id:'cont-mayil-5l', name:'Mayil 5 Liter Bottle', category:'containers', brand:'Mayil', size:'5L', fillingCapacityKg:4.56, qty:300, unit:'Pieces', threshold:80, image:null},
+      {id:'cont-std-1l', name:'Standard 1 Liter Bottle', category:'containers', brand:SHARED_BRAND, size:'1L', fillingCapacityKg:0.912, qty:1500, unit:'Pieces', threshold:200, image:null},
+      {id:'cont-std-1kg', name:'Standard 1kg Bottle', category:'containers', brand:SHARED_BRAND, size:'1kg', fillingCapacityKg:1, qty:2000, unit:'Pieces', threshold:300, image:null},
+      {id:'cont-std-2kg', name:'Standard 2kg Bottle', category:'containers', brand:SHARED_BRAND, size:'2kg', fillingCapacityKg:2, qty:1200, unit:'Pieces', threshold:200, image:null},
+      {id:'cont-std-5kg', name:'Standard 5kg Bottle', category:'containers', brand:SHARED_BRAND, size:'5kg', fillingCapacityKg:5, qty:600, unit:'Pieces', threshold:100, image:null},
+      {id:'cont-alibaba-17kg', name:'Alibaba 17kg Jerry Can', category:'containers', brand:'Alibaba', size:'17kg', fillingCapacityKg:17, qty:150, unit:'Pieces', threshold:30, image:null},
+
+      // Labels
+      {id:'lbl-alibaba-1l', name:'Alibaba 1 Liter Label', category:'labels', brand:'Alibaba', size:'1L', qty:2000, unit:'Pieces', threshold:300, image:null},
+      {id:'lbl-aladdin-1kg', name:'Aladdin 1kg Label', category:'labels', brand:'Aladdin', size:'1kg', qty:2000, unit:'Pieces', threshold:300, image:null},
+      {id:'lbl-aladdin-2kg', name:'Aladdin 2kg Label', category:'labels', brand:'Aladdin', size:'2kg', qty:1200, unit:'Pieces', threshold:200, image:null},
+      {id:'lbl-aladdin-5kg', name:'Aladdin 5kg Label', category:'labels', brand:'Aladdin', size:'5kg', qty:600, unit:'Pieces', threshold:100, image:null},
+      {id:'lbl-pe-1kg', name:'Periuk Emas 1kg Label', category:'labels', brand:'Periuk Emas', size:'1kg', qty:2000, unit:'Pieces', threshold:300, image:null},
+      {id:'lbl-pe-2kg', name:'Periuk Emas 2kg Label', category:'labels', brand:'Periuk Emas', size:'2kg', qty:1200, unit:'Pieces', threshold:200, image:null},
+      {id:'lbl-pe-5kg', name:'Periuk Emas 5kg Label', category:'labels', brand:'Periuk Emas', size:'5kg', qty:600, unit:'Pieces', threshold:100, image:null},
+
+      // Cartons
+      {id:'ctn-alibaba-1l', name:'Alibaba 1 Liter Carton Box', category:'cartons', brand:'Alibaba', size:'1L', bottlesPerCarton:12, qty:200, unit:'Boxes', threshold:40, image:null},
+      {id:'ctn-aladdin-1kg', name:'Aladdin 1kg Carton', category:'cartons', brand:'Aladdin', size:'1kg', bottlesPerCarton:12, qty:200, unit:'Boxes', threshold:40, image:null},
+      {id:'ctn-aladdin-2kg', name:'Aladdin 2kg Carton', category:'cartons', brand:'Aladdin', size:'2kg', bottlesPerCarton:6, qty:150, unit:'Boxes', threshold:30, image:null},
+      {id:'ctn-aladdin-5kg', name:'Aladdin 5kg Carton', category:'cartons', brand:'Aladdin', size:'5kg', bottlesPerCarton:4, qty:100, unit:'Boxes', threshold:20, image:null},
+      {id:'ctn-pe-1kg', name:'Periuk Emas 1kg Carton', category:'cartons', brand:'Periuk Emas', size:'1kg', bottlesPerCarton:12, qty:200, unit:'Boxes', threshold:40, image:null},
+      {id:'ctn-pe-2kg', name:'Periuk Emas 2kg Carton', category:'cartons', brand:'Periuk Emas', size:'2kg', bottlesPerCarton:6, qty:150, unit:'Boxes', threshold:30, image:null},
+      {id:'ctn-pe-5kg', name:'Periuk Emas 5kg Carton', category:'cartons', brand:'Periuk Emas', size:'5kg', bottlesPerCarton:4, qty:100, unit:'Boxes', threshold:20, image:null},
+
+      // Finished Goods (BOM-driven)
+      {id:'fg-alibaba-1l', name:'Alibaba Cooking Oil 1 Liter x 12 Bottles', category:'finished-goods', brand:'Alibaba', qty:40, unit:'Cases', threshold:15, image:null,
+        unitsPerCase:12, oilPerUnitKg:0.912, linkedContainerId:'cont-std-1l', linkedLabelId:'lbl-alibaba-1l', linkedCartonId:'ctn-alibaba-1l'},
+      {id:'fg-aladdin-1kg', name:'Aladdin Cooking Oil 1kg x 12 Bottles', category:'finished-goods', brand:'Aladdin', qty:35, unit:'Cases', threshold:15, image:null,
+        unitsPerCase:12, oilPerUnitKg:1, linkedContainerId:'cont-std-1kg', linkedLabelId:'lbl-aladdin-1kg', linkedCartonId:'ctn-aladdin-1kg'},
+      {id:'fg-aladdin-2kg', name:'Aladdin Cooking Oil 2kg x 6 Bottles', category:'finished-goods', brand:'Aladdin', qty:25, unit:'Cases', threshold:10, image:null,
+        unitsPerCase:6, oilPerUnitKg:2, linkedContainerId:'cont-std-2kg', linkedLabelId:'lbl-aladdin-2kg', linkedCartonId:'ctn-aladdin-2kg'},
+      {id:'fg-aladdin-5kg', name:'Aladdin Cooking Oil 5kg x 4 Bottles', category:'finished-goods', brand:'Aladdin', qty:20, unit:'Cases', threshold:8, image:null,
+        unitsPerCase:4, oilPerUnitKg:5, linkedContainerId:'cont-std-5kg', linkedLabelId:'lbl-aladdin-5kg', linkedCartonId:'ctn-aladdin-5kg'},
+      {id:'fg-pe-1kg', name:'Periuk Emas Cooking Oil 1kg x 12 Bottles', category:'finished-goods', brand:'Periuk Emas', qty:35, unit:'Cases', threshold:15, image:null,
+        unitsPerCase:12, oilPerUnitKg:1, linkedContainerId:'cont-std-1kg', linkedLabelId:'lbl-pe-1kg', linkedCartonId:'ctn-pe-1kg'},
+      {id:'fg-pe-2kg', name:'Periuk Emas Cooking Oil 2kg x 6 Bottles', category:'finished-goods', brand:'Periuk Emas', qty:25, unit:'Cases', threshold:10, image:null,
+        unitsPerCase:6, oilPerUnitKg:2, linkedContainerId:'cont-std-2kg', linkedLabelId:'lbl-pe-2kg', linkedCartonId:'ctn-pe-2kg'},
+      {id:'fg-pe-5kg', name:'Periuk Emas Cooking Oil 5kg x 4 Bottles', category:'finished-goods', brand:'Periuk Emas', qty:20, unit:'Cases', threshold:8, image:null,
+        unitsPerCase:4, oilPerUnitKg:5, linkedContainerId:'cont-std-5kg', linkedLabelId:'lbl-pe-5kg', linkedCartonId:'ctn-pe-5kg'},
+      {id:'fg-mayil-1l', name:'Mayil Prayer Oil 1 Liter', category:'finished-goods', brand:'Mayil', qty:60, unit:'Units', threshold:20, image:null,
+        unitsPerCase:1, oilPerUnitKg:0.912, linkedContainerId:'cont-mayil-1l', linkedLabelId:null, linkedCartonId:null},
+      {id:'fg-mayil-1.2l', name:'Mayil Prayer Oil 1.2 Liter', category:'finished-goods', brand:'Mayil', qty:50, unit:'Units', threshold:20, image:null,
+        unitsPerCase:1, oilPerUnitKg:1.094, linkedContainerId:'cont-mayil-1.2l', linkedLabelId:null, linkedCartonId:null},
+      {id:'fg-mayil-2l', name:'Mayil Prayer Oil 2 Liter', category:'finished-goods', brand:'Mayil', qty:40, unit:'Units', threshold:15, image:null,
+        unitsPerCase:1, oilPerUnitKg:1.824, linkedContainerId:'cont-mayil-2l', linkedLabelId:null, linkedCartonId:null},
+      {id:'fg-mayil-5l', name:'Mayil Prayer Oil 5 Liter', category:'finished-goods', brand:'Mayil', qty:20, unit:'Units', threshold:10, image:null,
+        unitsPerCase:1, oilPerUnitKg:4.56, linkedContainerId:'cont-mayil-5l', linkedLabelId:null, linkedCartonId:null},
+      {id:'fg-alibaba-17kg', name:'Alibaba Cooking Oil 17kg Jerry Can', category:'finished-goods', brand:'Alibaba', qty:15, unit:'Units', threshold:8, image:null,
+        unitsPerCase:1, oilPerUnitKg:17, linkedContainerId:'cont-alibaba-17kg', linkedLabelId:null, linkedCartonId:null}
+    ],
+    logs: []
+  };
+}
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw){ const s = defaultState(); saveState(s); return s; }
+    const parsed = JSON.parse(raw);
+    parsed.items.forEach(i=>{ if(!i.brand) i.brand = DEFAULT_BRAND; });
+    return parsed;
+  }catch(e){
+    const s = defaultState(); saveState(s); return s;
+  }
+}
+function saveState(s){ localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); }
+
+let state = loadState();
+let currentDashBrand = 'all';
+let currentStockBrand = 'all';
+let simBrand = null;
+let simGrade = null;
+let simRows = [];
+let isManagerAuthenticated = false;
+
+/* ============================= HELPERS ============================= */
+const CATEGORY_LABELS = {'bulk-oil':'Bulk Oil','containers':'Containers','labels':'Labels','cartons':'Cartons','finished-goods':'Finished Goods','custom':'Custom Item'};
+const CATEGORY_ICONS = {'bulk-oil':ICONS.oil,'containers':ICONS.bottle,'labels':ICONS.label,'cartons':ICONS.carton,'finished-goods':ICONS.truck,'custom':ICONS.item};
+
+function findItem(id){ return state.items.find(i=>i.id===id); }
+function isLow(item){ return typeof item.threshold==='number' && item.qty <= item.threshold; }
+function fmt(n){ if(n===undefined||n===null||isNaN(n)) return '0'; return Number(n).toLocaleString('en-US',{maximumFractionDigits:3}); }
+function formatBulkOil(kg){
+  const mt = Number(kg||0)/1000;
+  return `${mt.toLocaleString('en-US',{minimumFractionDigits:3,maximumFractionDigits:3})} MT (${fmt(kg)} KG)`;
+}
+function uid(prefix){ return prefix + '-' + Date.now() + '-' + Math.floor(Math.random()*1000); }
+function nowStr(){ const d = new Date(); return {date:d.toLocaleDateString(), time:d.toLocaleTimeString(), iso:d.toISOString()}; }
+function showToast(msg, isErr){
+  const t = document.createElement('div');
+  t.className = 'toast' + (isErr?' err':'');
+  t.innerHTML = `${isErr?ICONS.alert:ICONS.check}<span>${msg}</span>`;
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(), 4200);
+}
+function getDistinctBrands(){ const set=new Set(); state.items.forEach(i=>{ if(i.brand) set.add(i.brand); }); return Array.from(set).sort(); }
+function getDistinctGrades(brand){
+  const set=new Set();
+  state.items.filter(i=>i.category==='bulk-oil' && (!brand || brand==='all' || i.brand===brand || i.brand===SHARED_BRAND)).forEach(i=>{ if(i.grade) set.add(i.grade); });
+  return Array.from(set).sort();
+}
+function itemInBrand(item, brand){ return brand==='all' || item.brand===brand || item.brand===SHARED_BRAND; }
+
+/* ============================= NAVIGATION ============================= */
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    if(btn.dataset.view==='addnew' && !isManagerAuthenticated){
+      openPinModal(()=> activateTab(btn));
+      return;
+    }
+    activateTab(btn);
+  });
+});
+function activateTab(btn){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+btn.dataset.view).classList.add('active');
+  if(btn.dataset.view==='dashboard') renderDashboard();
+  if(btn.dataset.view==='stock') renderStockGrid();
+  if(btn.dataset.view==='addnew') refreshAddNewFormOptions();
+  if(btn.dataset.view==='history') renderHistory();
+}
+
+/* ============================= PIN MODAL ============================= */
+const pinModal = document.getElementById('pinModal');
+const pinInput = document.getElementById('pinInput');
+let pinSuccessCallback = null;
+function openPinModal(onSuccess){
+  pinSuccessCallback = onSuccess;
+  pinInput.value='';
+  document.getElementById('pinError').style.display='none';
+  pinModal.classList.add('active');
+  setTimeout(()=>pinInput.focus(), 100);
+}
+document.getElementById('pinCancelBtn').addEventListener('click', ()=>pinModal.classList.remove('active'));
+document.getElementById('pinSubmitBtn').addEventListener('click', submitPin);
+pinInput.addEventListener('keydown', (e)=>{ if(e.key==='Enter') submitPin(); });
+function submitPin(){
+  if(pinInput.value === MANAGER_PIN){
+    isManagerAuthenticated = true;
+    pinModal.classList.remove('active');
+    if(pinSuccessCallback) pinSuccessCallback();
+  } else {
+    document.getElementById('pinError').style.display='block';
+    pinInput.value=''; pinInput.focus();
+  }
+}
+
+/* ============================= BRAND FILTERS ============================= */
+function populateBrandFilterSelect(selectEl, currentVal){
+  const brands = getDistinctBrands();
+  selectEl.innerHTML = `<option value="all">All Brands</option>` + brands.map(b=>`<option value="${b}">${b}</option>`).join('');
+  selectEl.value = brands.includes(currentVal) ? currentVal : 'all';
+}
+const dashBrandFilter = document.getElementById('dashBrandFilter');
+dashBrandFilter.addEventListener('change', ()=>{ currentDashBrand = dashBrandFilter.value; renderDashboard(); });
+const stockBrandFilter = document.getElementById('stockBrandFilter');
+stockBrandFilter.addEventListener('change', ()=>{ currentStockBrand = stockBrandFilter.value; renderStockGrid(); });
+
+/* ============================= DASHBOARD ============================= */
+function renderDashboard(){
+  populateBrandFilterSelect(dashBrandFilter, currentDashBrand);
+  currentDashBrand = dashBrandFilter.value;
+  const brand = currentDashBrand;
+
+  const oilItems = state.items.filter(i=>i.category==='bulk-oil' && itemInBrand(i,brand));
+  const containerItems = state.items.filter(i=>i.category==='containers' && itemInBrand(i,brand));
+  const labelItems = state.items.filter(i=>i.category==='labels' && itemInBrand(i,brand));
+  const cartonItems = state.items.filter(i=>i.category==='cartons' && itemInBrand(i,brand));
+  const finishedItems = state.items.filter(i=>i.category==='finished-goods' && itemInBrand(i,brand));
+
+  const oilTotal = oilItems.reduce((s,i)=>s+Number(i.qty||0),0);
+  const containersTotal = containerItems.reduce((s,i)=>s+Number(i.qty||0),0);
+  const labelsTotal = labelItems.reduce((s,i)=>s+Number(i.qty||0),0);
+  const cartonsTotal = cartonItems.reduce((s,i)=>s+Number(i.qty||0),0);
+  const finishedTotal = finishedItems.reduce((s,i)=>s+Number(i.qty||0),0);
+
+  document.getElementById('kpiGrid').innerHTML = `
+    <div class="kpi-card ${oilItems.some(isLow)?'low':''}">
+      ${oilItems.some(isLow)?'<span class="status-badge">Low</span>':''}
+      <div class="icon-wrap">${ICONS.oil}</div>
+      <div class="value">${formatBulkOil(oilTotal)}</div>
+      <div class="label">Total Bulk Oil in Stock</div>
+      <div class="sub">Raw material available for packing</div>
+    </div>
+    <div class="kpi-card ${containerItems.some(isLow)?'low':''}">
+      ${containerItems.some(isLow)?'<span class="status-badge">Low</span>':''}
+      <div class="icon-wrap">${ICONS.bottle}</div>
+      <div class="value">${fmt(containersTotal)}</div>
+      <div class="label">Empty Containers / Bottles</div>
+      <div class="sub">Across all sizes and jerry cans</div>
+    </div>
+    <div class="kpi-card ${labelItems.some(isLow)?'low':''}">
+      ${labelItems.some(isLow)?'<span class="status-badge">Low</span>':''}
+      <div class="icon-wrap">${ICONS.label}</div>
+      <div class="value">${fmt(labelsTotal)}</div>
+      <div class="label">Labels Available</div>
+      <div class="sub">Across all brands and sizes</div>
+    </div>
+    <div class="kpi-card ${cartonItems.some(isLow)?'low':''}">
+      ${cartonItems.some(isLow)?'<span class="status-badge">Low</span>':''}
+      <div class="icon-wrap">${ICONS.carton}</div>
+      <div class="value">${fmt(cartonsTotal)}</div>
+      <div class="label">Empty Carton Boxes</div>
+      <div class="sub">Ready for shipment packing</div>
+    </div>
+    <div class="kpi-card ${finishedItems.some(isLow)?'low':''}">
+      ${finishedItems.some(isLow)?'<span class="status-badge">Low</span>':''}
+      <div class="icon-wrap">${ICONS.truck}</div>
+      <div class="value">${fmt(finishedTotal)}</div>
+      <div class="label">Ready-to-Ship Finished Goods</div>
+      <div class="sub">Cases / units currently packed</div>
+    </div>
+  `;
+
+  const gradeMap = {}; oilItems.forEach(i=>{ const g=i.grade||'Unspecified'; gradeMap[g]=(gradeMap[g]||0)+Number(i.qty||0); });
+  const containerMap = {}; containerItems.forEach(i=>{ const k=`${i.brand} ${i.size||''}`.trim(); containerMap[k]=(containerMap[k]||0)+Number(i.qty||0); });
+  const labelMap = {}; labelItems.forEach(i=>{ const k=`${i.brand} ${i.size||''}`.trim(); labelMap[k]=(labelMap[k]||0)+Number(i.qty||0); });
+  const cartonMap = {}; cartonItems.forEach(i=>{ const k=`${i.brand} ${i.size||''}`.trim(); cartonMap[k]=(cartonMap[k]||0)+Number(i.qty||0); });
+
+  function rowsHtml(map, lowCheck, isOil){
+    const keys = Object.keys(map);
+    if(keys.length===0) return `<div class="empty-mini">No data available.</div>`;
+    return keys.map(k=>`
+      <div class="breakdown-row">
+        <span class="name"><span class="status-dot ${lowCheck(k)?'low':''}"></span><span class="txt">${k}</span></span>
+        <span class="val">${isOil ? formatBulkOil(map[k]) : fmt(map[k])}</span>
+      </div>`).join('');
+  }
+  document.getElementById('breakdownGrid').innerHTML = `
+    <div class="breakdown-card">
+      <h3 class="sub-title">${ICONS.oil} Bulk Oil by Grade</h3>
+      ${rowsHtml(gradeMap, g=>oilItems.filter(i=>(i.grade||'Unspecified')===g).some(isLow), true)}
+    </div>
+    <div class="breakdown-card">
+      <h3 class="sub-title">${ICONS.bottle} Containers by Brand &amp; Size</h3>
+      ${rowsHtml(containerMap, k=>containerItems.filter(i=>`${i.brand} ${i.size||''}`.trim()===k).some(isLow), false)}
+    </div>
+    <div class="breakdown-card">
+      <h3 class="sub-title">${ICONS.label} Labels by Brand &amp; Size</h3>
+      ${rowsHtml(labelMap, k=>labelItems.filter(i=>`${i.brand} ${i.size||''}`.trim()===k).some(isLow), false)}
+    </div>
+    <div class="breakdown-card">
+      <h3 class="sub-title">${ICONS.carton} Cartons by Brand &amp; Size</h3>
+      ${rowsHtml(cartonMap, k=>cartonItems.filter(i=>`${i.brand} ${i.size||''}`.trim()===k).some(isLow), false)}
+    </div>
+  `;
+
+  renderSimulator();
+}
+
+/* ============================= ORDER & PACKING SIMULATOR ============================= */
+function renderSimulator(){
+  const brands = getDistinctBrands().filter(b=>state.items.some(i=>i.category==='bulk-oil' && (i.brand===b || i.brand===SHARED_BRAND)) && b!==SHARED_BRAND);
+  const simBrandSelect = document.getElementById('simBrandSelect');
+  if(brands.length===0){
+    simBrandSelect.innerHTML = `<option value="">No brands available</option>`;
+    document.getElementById('simGradeSelect').innerHTML='';
+    document.getElementById('simRowList').innerHTML = `<div class="empty-mini">Add a brand with containers first.</div>`;
+    document.getElementById('simAnalysisWrap').innerHTML='';
+    return;
+  }
+  if(!simBrand || !brands.includes(simBrand)) simBrand = brands[0];
+  simBrandSelect.innerHTML = brands.map(b=>`<option value="${b}" ${b===simBrand?'selected':''}>${b}</option>`).join('');
+
+  const grades = getDistinctGrades(simBrand);
+  const simGradeSelect = document.getElementById('simGradeSelect');
+  if(!simGrade || !grades.includes(simGrade)) simGrade = grades[0] || null;
+  simGradeSelect.innerHTML = grades.map(g=>`<option value="${g}" ${g===simGrade?'selected':''}>${g}</option>`).join('');
+
+  if(simRows.length===0) addSimRow(false);
+  renderSimRows();
+  computeAndRenderAnalysis();
+}
+document.getElementById('simBrandSelect').addEventListener('change', (e)=>{ simBrand=e.target.value; simGrade=null; simRows=[]; renderSimulator(); });
+document.getElementById('simGradeSelect').addEventListener('change', (e)=>{ simGrade=e.target.value; computeAndRenderAnalysis(); });
+document.getElementById('simAddRowBtn').addEventListener('click', ()=>addSimRow(true));
+
+function addSimRow(rerender){
+  simRows.push({id:uid('row'), containerItemId:'', qty:0});
+  if(rerender){ renderSimRows(); computeAndRenderAnalysis(); }
+}
+function removeSimRow(rowId){ simRows = simRows.filter(r=>r.id!==rowId); renderSimRows(); computeAndRenderAnalysis(); }
+function renderSimRows(){
+  const containerOptions = state.items.filter(i=>i.category==='containers' && itemInBrand(i, simBrand));
+  const wrap = document.getElementById('simRowList');
+  if(containerOptions.length===0){ wrap.innerHTML = `<div class="empty-mini">No container stock found for this brand yet.</div>`; return; }
+  wrap.innerHTML = simRows.map(row=>{
+    if(!row.containerItemId) row.containerItemId = containerOptions[0].id;
+    return `
+    <div class="sim-row" data-row="${row.id}">
+      <select onchange="updateSimRow('${row.id}','containerItemId',this.value)">
+        ${containerOptions.map(c=>`<option value="${c.id}" ${c.id===row.containerItemId?'selected':''}>${c.name} (${c.fillingCapacityKg||0} KG)</option>`).join('')}
+      </select>
+      <input type="number" min="0" placeholder="Qty" value="${row.qty||''}" oninput="updateSimRow('${row.id}','qty',this.value)">
+      <button class="icon-btn" onclick="removeSimRow('${row.id}')" type="button">${ICONS.trash}</button>
+    </div>`;
+  }).join('');
+}
+function updateSimRow(rowId, field, value){
+  const row = simRows.find(r=>r.id===rowId);
+  if(!row) return;
+  row[field] = field==='qty' ? (parseFloat(value)||0) : value;
+  computeAndRenderAnalysis();
+}
+
+function computeAndRenderAnalysis(){
+  const wrap = document.getElementById('simAnalysisWrap');
+  if(!simBrand || !simGrade){ wrap.innerHTML=''; return; }
+
+  const oilItems = state.items.filter(i=>i.category==='bulk-oil' && (i.brand===simBrand || i.brand===SHARED_BRAND) && i.grade===simGrade);
+  const availableOilKg = oilItems.reduce((s,i)=>s+Number(i.qty||0),0);
+
+  let totalOilNeeded = 0;
+  const rowDetails = simRows.filter(r=>r.containerItemId && r.qty>0).map(r=>{
+    const containerItem = findItem(r.containerItemId);
+    const capacity = containerItem?.fillingCapacityKg || 0;
+    const oilNeeded = r.qty * capacity;
+    totalOilNeeded += oilNeeded;
+    const labelItem = state.items.find(i=>i.category==='labels' && i.brand===simBrand && i.size===containerItem?.size);
+    const cartonItem = state.items.find(i=>i.category==='cartons' && i.brand===simBrand && i.size===containerItem?.size);
+    return {containerItem, qty:r.qty, oilNeeded, containerBalance:(containerItem?.qty||0)-r.qty, labelItem, cartonItem};
+  });
+
+  const oilBalance = availableOilKg - totalOilNeeded;
+
+  // Group by label
+  const labelGroups = {};
+  rowDetails.forEach(rd=>{ if(rd.labelItem){ labelGroups[rd.labelItem.id] = (labelGroups[rd.labelItem.id]||0) + rd.qty; } });
+  // Group by carton
+  const cartonGroups = {};
+  rowDetails.forEach(rd=>{ if(rd.cartonItem){ cartonGroups[rd.cartonItem.id] = (cartonGroups[rd.cartonItem.id]||0) + rd.qty; } });
+
+  const shortfalls = [];
+  if(oilBalance < 0) shortfalls.push(`Bulk Oil short by ${formatBulkOil(Math.abs(oilBalance))}`);
+  rowDetails.forEach(rd=>{ if(rd.containerBalance < 0) shortfalls.push(`${rd.containerItem?.name||'Container'} short by ${fmt(Math.abs(rd.containerBalance))} pieces`); });
+  Object.keys(labelGroups).forEach(id=>{
+    const li = findItem(id); const bal = li.qty - labelGroups[id];
+    if(bal < 0) shortfalls.push(`${li.name} short by ${fmt(Math.abs(bal))} pieces`);
+  });
+  const cartonNeededMap = {};
+  Object.keys(cartonGroups).forEach(id=>{
+    const ci = findItem(id);
+    const needed = Math.ceil(cartonGroups[id] / (ci.bottlesPerCarton||1));
+    cartonNeededMap[id] = needed;
+    const bal = ci.qty - needed;
+    if(bal < 0) shortfalls.push(`${ci.name} short by ${fmt(Math.abs(bal))} boxes`);
+  });
+
+  const totalContainers = rowDetails.reduce((s,rd)=>s+rd.qty,0);
+  const canPack = shortfalls.length===0 && totalContainers>0;
+
+  wrap.innerHTML = `
+    <div class="analysis-grid">
+      <div class="analysis-item"><div class="a-label">Total Bulk Oil Required</div><div class="a-value">${formatBulkOil(totalOilNeeded)}</div></div>
+      <div class="analysis-item"><div class="a-label">Bulk Oil Balance After Packing</div><div class="a-value ${oilBalance<0?'negative':''}">${formatBulkOil(oilBalance)}</div></div>
+      <div class="analysis-item"><div class="a-label">Total Containers Requested</div><div class="a-value">${fmt(totalContainers)}</div></div>
+      <div class="analysis-item"><div class="a-label">Carton Boxes Needed (Total)</div><div class="a-value">${fmt(Object.values(cartonNeededMap).reduce((s,v)=>s+v,0))}</div></div>
+    </div>
+    ${rowDetails.length ? `
+    <div class="breakdown-card" style="margin-top:14px;">
+      <h3 class="sub-title">${ICONS.bottle} Container Balance by Size</h3>
+      ${rowDetails.map(rd=>`
+        <div class="breakdown-row">
+          <span class="name"><span class="status-dot ${rd.containerBalance<0?'low':''}"></span><span class="txt">${rd.containerItem?.name||'—'}</span></span>
+          <span class="val">${fmt(rd.containerBalance)} remaining</span>
+        </div>`).join('')}
+    </div>
+    <div class="breakdown-card" style="margin-top:14px;">
+      <h3 class="sub-title">${ICONS.label} Label Balance</h3>
+      ${Object.keys(labelGroups).length ? Object.keys(labelGroups).map(id=>{
+        const li = findItem(id); const bal = li.qty - labelGroups[id];
+        return `<div class="breakdown-row"><span class="name"><span class="status-dot ${bal<0?'low':''}"></span><span class="txt">${li.name}</span></span><span class="val">${fmt(bal)} remaining</span></div>`;
+      }).join('') : `<div class="empty-mini">No matching labels required for this selection.</div>`}
+    </div>
+    <div class="breakdown-card" style="margin-top:14px;">
+      <h3 class="sub-title">${ICONS.carton} Carton Balance</h3>
+      ${Object.keys(cartonGroups).length ? Object.keys(cartonGroups).map(id=>{
+        const ci = findItem(id); const needed = cartonNeededMap[id]; const bal = ci.qty - needed;
+        return `<div class="breakdown-row"><span class="name"><span class="status-dot ${bal<0?'low':''}"></span><span class="txt">${ci.name}</span></span><span class="val">${needed} needed — ${fmt(bal)} remaining</span></div>`;
+      }).join('') : `<div class="empty-mini">No matching cartons required for this selection.</div>`}
+    </div>` : ''}
+    <div class="status-banner ${canPack?'':'bad'}">
+      <div class="s-icon">${canPack?ICONS.check:ICONS.alert}</div>
+      <div class="s-text">
+        ${canPack
+          ? `<b>Order Can Be Packed &amp; Shipped.</b> Sufficient bulk oil, containers, labels, and cartons are available for this order.`
+          : (totalContainers===0
+              ? `Enter requested container quantities above to run the analysis.`
+              : `<b>Insufficient Stock Warning.</b> This order cannot be fully packed right now:<ul>${shortfalls.map(s=>`<li>${s}</li>`).join('')}</ul>`)
+        }
+      </div>
+    </div>
+  `;
+}
+
+/* ============================= STOCK MANAGEMENT ============================= */
+function renderStockGrid(){
+  populateBrandFilterSelect(stockBrandFilter, currentStockBrand);
+  currentStockBrand = stockBrandFilter.value;
+
+  const grid = document.getElementById('stockGrid');
+  const items = state.items.filter(i=>itemInBrand(i,currentStockBrand));
+  if(items.length===0){ grid.innerHTML = `<div class="empty-msg">No stock items found for this brand. Use "Add New Stock Item" to get started.</div>`; return; }
+
+  grid.innerHTML = items.map(item=>{
+    let bomNote = '';
+    if(item.category==='finished-goods'){
+      const parts = [];
+      parts.push(`${item.unitsPerCase||1} bottle(s)/case`);
+      parts.push(`${item.oilPerUnitKg||0} KG oil each`);
+      if(item.linkedLabelId) parts.push('label linked');
+      if(item.linkedCartonId) parts.push('carton linked');
+      bomNote = `<div class="bom-note">BOM: ${parts.join(' · ')}</div>`;
+    }
+    return `
+    <div class="stock-card ${isLow(item)?'low':''}">
+      <div class="thumb">${item.image ? `<img src="${item.image}">` : (CATEGORY_ICONS[item.category]||ICONS.item)}</div>
+      <div class="tag-row">
+        <span class="cat-tag">${CATEGORY_LABELS[item.category]||'Item'}</span>
+        <span class="brand-tag">${item.brand||DEFAULT_BRAND}</span>
+        ${item.grade ? `<span class="grade-tag">${item.grade}</span>` : ''}
+        ${item.size ? `<span class="grade-tag">${item.size}</span>` : ''}
+      </div>
+      <h4>${item.name}</h4>
+      ${item.category==='bulk-oil' ? `
+        <div class="qty-row"><span class="qty small-text">${formatBulkOil(item.qty)}</span></div>
+      ` : `
+        <div class="qty-row"><span class="qty">${fmt(item.qty)}</span><span class="unit">${item.unit}</span></div>
+      `}
+      <div class="thresh">Alert below: ${item.category==='bulk-oil'?formatBulkOil(item.threshold||0):fmt(item.threshold ?? 0)+' '+item.unit}</div>
+      ${bomNote}
+      ${isLow(item) ? `<div class="low-tag">${ICONS.alert} Low Stock — Reorder Soon</div>` : ''}
+      <button class="btn btn-gold btn-block" onclick="openUpdateModal('${item.id}')">Update Quantity</button>
+    </div>`;
+  }).join('');
+}
+
+/* ============================= UPDATE QUANTITY MODAL ============================= */
+const updateQtyModal = document.getElementById('updateQtyModal');
+let currentUpdateItemId = null;
+let updateSelectedAction = null;
+
+function openUpdateModal(itemId){
+  const item = findItem(itemId);
+  if(!item) return;
+  currentUpdateItemId = itemId;
+  updateSelectedAction = null;
+  document.getElementById('updateModalTitle').textContent = `Update: ${item.name}`;
+  document.getElementById('updateModalSub').textContent = `Current stock: ${item.category==='bulk-oil'?formatBulkOil(item.qty):fmt(item.qty)+' '+item.unit}`;
+  document.getElementById('updQty').value='';
+  document.getElementById('updNote').value='';
+  document.getElementById('updBtnIn').classList.remove('selected');
+  document.getElementById('updBtnOut').classList.remove('selected');
+  document.getElementById('updAutoNote').style.display='none';
+
+  const isBulkOil = item.category==='bulk-oil';
+  document.getElementById('updBulkOilUnitGroup').style.display = isBulkOil?'block':'none';
+  document.getElementById('updQtyUnit').value='KG';
+  document.getElementById('updQtyLabel').textContent = isBulkOil ? 'Quantity (choose KG or MT)' : (item.category==='finished-goods' ? `Quantity (${item.unit})` : 'Quantity');
+
+  updateQtyModal.classList.add('active');
+}
+document.getElementById('closeUpdateModal').addEventListener('click', ()=>updateQtyModal.classList.remove('active'));
+updateQtyModal.addEventListener('click', (e)=>{ if(e.target===updateQtyModal) updateQtyModal.classList.remove('active'); });
+
+function updateAutoNoteModal(){
+  const item = findItem(currentUpdateItemId);
+  const box = document.getElementById('updAutoNote');
+  if(item && item.category==='finished-goods' && updateSelectedAction==='in'){
+    box.style.display='flex'; box.className='status-banner';
+    const unitsPerCase = item.unitsPerCase||1;
+    const oilTotal = (unitsPerCase*(item.oilPerUnitKg||0)).toFixed(3);
+    const parts = [`${oilTotal} KG bulk oil`, `${unitsPerCase} container(s)`];
+    if(item.linkedLabelId) parts.push(`${unitsPerCase} label(s)`);
+    if(item.linkedCartonId) parts.push('1 carton');
+    box.innerHTML = `<div class="s-icon">${ICONS.info}</div><div class="s-text">Recording this as <b>Production Packed</b>. Per unit entered, the system will automatically deduct: ${parts.join(', ')}.</div>`;
+  } else { box.style.display='none'; }
+}
+document.getElementById('updBtnIn').addEventListener('click', ()=>{
+  updateSelectedAction='in';
+  document.getElementById('updBtnIn').classList.add('selected');
+  document.getElementById('updBtnOut').classList.remove('selected');
+  updateAutoNoteModal();
+});
+document.getElementById('updBtnOut').addEventListener('click', ()=>{
+  updateSelectedAction='out';
+  document.getElementById('updBtnOut').classList.add('selected');
+  document.getElementById('updBtnIn').classList.remove('selected');
+  updateAutoNoteModal();
+});
+
+function addLog(action, itemId, qty, note){
+  const item = findItem(itemId);
+  const t = nowStr();
+  state.logs.unshift({
+    id: uid('log'), date:t.date, time:t.time, iso:t.iso,
+    action, itemId, itemName: item?item.name:'(deleted item)',
+    itemCategory: item?item.category:null,
+    brand: item?(item.brand||DEFAULT_BRAND):DEFAULT_BRAND,
+    grade: item?item.grade:null,
+    qty, note: note||''
+  });
+}
+
+document.getElementById('updSubmitBtn').addEventListener('click', ()=>{
+  const item = findItem(currentUpdateItemId);
+  let qty = parseFloat(document.getElementById('updQty').value);
+  const note = document.getElementById('updNote').value.trim();
+
+  if(!item){ showToast('Item not found.', true); return; }
+  if(!updateSelectedAction){ showToast('Please choose Stock Added or Stock Used.', true); return; }
+  if(!qty || qty<=0){ showToast('Please enter a valid quantity.', true); return; }
+
+  if(item.category==='bulk-oil'){
+    const enteredUnit = document.getElementById('updQtyUnit').value;
+    if(enteredUnit==='MT') qty = qty*1000;
+  }
+
+  if(updateSelectedAction==='in' && item.category==='finished-goods'){
+    // ===== AUTOMATED BOM DEDUCTION ENGINE =====
+    const unitsPerCase = item.unitsPerCase || 1;
+    const oilPerUnitKg = item.oilPerUnitKg || 0;
+    const totalUnits = qty * unitsPerCase;
+    const oilNeededKg = totalUnits * oilPerUnitKg;
+
+    let oilItem = state.items.find(i=>i.category==='bulk-oil' && (i.brand===item.brand || i.brand===SHARED_BRAND)) || state.items.find(i=>i.category==='bulk-oil');
+    const containerItem = item.linkedContainerId ? findItem(item.linkedContainerId) : null;
+    const labelItem = item.linkedLabelId ? findItem(item.linkedLabelId) : null;
+    const cartonItem = item.linkedCartonId ? findItem(item.linkedCartonId) : null;
+
+    if(oilItem && oilItem.qty < oilNeededKg){ showToast(`Not enough bulk oil. Need ${formatBulkOil(oilNeededKg)}, only ${formatBulkOil(oilItem.qty)} available.`, true); return; }
+    if(containerItem && containerItem.qty < totalUnits){ showToast(`Not enough containers (${containerItem.name}). Need ${fmt(totalUnits)}, only ${fmt(containerItem.qty)} available.`, true); return; }
+    if(labelItem && labelItem.qty < totalUnits){ showToast(`Not enough labels (${labelItem.name}). Need ${fmt(totalUnits)}, only ${fmt(labelItem.qty)} available.`, true); return; }
+    if(cartonItem && cartonItem.qty < qty){ showToast(`Not enough cartons (${cartonItem.name}). Need ${fmt(qty)}, only ${fmt(cartonItem.qty)} available.`, true); return; }
+
+    if(oilItem){ oilItem.qty -= oilNeededKg; addLog('out', oilItem.id, oilNeededKg, `BOM auto-deduction for: ${item.name}`); }
+    if(containerItem){ containerItem.qty -= totalUnits; addLog('out', containerItem.id, totalUnits, `BOM auto-deduction for: ${item.name}`); }
+    if(labelItem){ labelItem.qty -= totalUnits; addLog('out', labelItem.id, totalUnits, `BOM auto-deduction for: ${item.name}`); }
+    if(cartonItem){ cartonItem.qty -= qty; addLog('out', cartonItem.id, qty, `BOM auto-deduction for: ${item.name}`); }
+
+    item.qty += qty;
+    addLog('in', item.id, qty, note || 'Production Packed (BOM applied)');
+    showToast(`Recorded ${fmt(qty)} ${item.unit.toLowerCase()} of ${item.name}. Oil, containers, labels and cartons updated automatically via BOM.`);
+
+  } else if(updateSelectedAction==='in'){
+    item.qty += qty;
+    addLog('in', item.id, qty, note);
+    showToast(`Added ${item.category==='bulk-oil'?formatBulkOil(qty):fmt(qty)+' '+item.unit} to ${item.name}.`);
+  } else {
+    if(item.qty < qty){ showToast(`Cannot remove that much — only ${item.category==='bulk-oil'?formatBulkOil(item.qty):fmt(item.qty)+' '+item.unit} available.`, true); return; }
+    item.qty -= qty;
+    addLog('out', item.id, qty, note);
+    showToast(`Removed ${item.category==='bulk-oil'?formatBulkOil(qty):fmt(qty)+' '+item.unit} from ${item.name}.`);
+  }
+
+  saveState(state);
+  updateQtyModal.classList.remove('active');
+  renderStockGrid();
+  renderDashboard();
+});
+
+/* ============================= ADD NEW STOCK ITEM ============================= */
+const newItemCategory = document.getElementById('newItemCategory');
+newItemCategory.addEventListener('change', updateNewItemFieldVisibility);
+document.getElementById('newItemSize').addEventListener('change', (e)=>{
+  document.getElementById('sizeCustomGroup').style.display = e.target.value==='custom' ? 'block':'none';
+});
+
+function refreshAddNewFormOptions(){
+  const brands = getDistinctBrands();
+  document.getElementById('brandSuggestions').innerHTML = brands.map(b=>`<option value="${b}">`).join('');
+  const grades = getDistinctGrades('all');
+  document.getElementById('gradeSuggestions').innerHTML = grades.map(g=>`<option value="${g}">`).join('');
+
+  const containerSel = document.getElementById('newItemLinkedContainer');
+  containerSel.innerHTML = `<option value="">— Select —</option>` +
+    state.items.filter(i=>i.category==='containers').map(c=>`<option value="${c.id}">${c.name} (${c.brand})</option>`).join('');
+
+  const labelSel = document.getElementById('newItemLinkedLabel');
+  labelSel.innerHTML = `<option value="">— None —</option>` +
+    state.items.filter(i=>i.category==='labels').map(l=>`<option value="${l.id}">${l.name} (${l.brand})</option>`).join('');
+
+  const cartonSel = document.getElementById('newItemLinkedCarton');
+  cartonSel.innerHTML = `<option value="">— None —</option>` +
+    state.items.filter(i=>i.category==='cartons').map(c=>`<option value="${c.id}">${c.name} (${c.brand})</option>`).join('');
+
+  updateNewItemFieldVisibility();
+}
+
+function updateNewItemFieldVisibility(){
+  const cat = newItemCategory.value;
+  document.getElementById('gradeGroup').style.display = cat==='bulk-oil' ? 'block':'none';
+  document.getElementById('sizeGroup').style.display = (cat==='containers'||cat==='labels'||cat==='cartons') ? 'block':'none';
+  if(!(cat==='containers'||cat==='labels'||cat==='cartons')) document.getElementById('sizeCustomGroup').style.display='none';
+  document.getElementById('capacityGroup').style.display = cat==='containers' ? 'block':'none';
+  document.getElementById('cartonRatioGroup').style.display = cat==='cartons' ? 'block':'none';
+  document.getElementById('bomGroup').style.display = cat==='finished-goods' ? 'block':'none';
+
+  const isBulkOil = cat==='bulk-oil';
+  document.getElementById('bulkOilEntryUnitGroup').style.display = isBulkOil ? 'block':'none';
+  document.getElementById('unitGroup').style.display = isBulkOil ? 'none':'block';
+  document.getElementById('qtyLabel').textContent = isBulkOil ? 'Initial Quantity (choose KG or MT)' : 'Initial Quantity';
+
+  const unitSel = document.getElementById('newItemUnit');
+  if(cat==='bulk-oil') unitSel.value='KG';
+  else if(cat==='cartons') unitSel.value='Boxes';
+  else if(cat==='containers'||cat==='labels') unitSel.value='Pieces';
+  else if(cat==='finished-goods') unitSel.value='Cases';
+}
+updateNewItemFieldVisibility();
+
+let uploadedImageBase64 = null;
+const uploadBox = document.getElementById('uploadBox');
+const newItemImageInput = document.getElementById('newItemImage');
+uploadBox.addEventListener('click', ()=>newItemImageInput.click());
+newItemImageInput.addEventListener('change', (e)=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = (ev)=>{
+    uploadedImageBase64 = ev.target.result;
+    const preview = document.getElementById('uploadPreview');
+    preview.src = uploadedImageBase64; preview.style.display='block';
+  };
+  reader.readAsDataURL(file);
+});
+
+document.getElementById('saveNewItemBtn').addEventListener('click', ()=>{
+  const name = document.getElementById('newItemName').value.trim();
+  const brand = document.getElementById('newItemBrand').value.trim() || DEFAULT_BRAND;
+  const category = newItemCategory.value;
+  let qty = parseFloat(document.getElementById('newItemQty').value) || 0;
+  const threshold = parseFloat(document.getElementById('newItemThreshold').value) || 0;
+  const capacityKg = parseFloat(document.getElementById('newItemCapacity').value) || undefined;
+  const cartonRatio = parseFloat(document.getElementById('newItemCartonRatio').value) || undefined;
+  const grade = document.getElementById('newItemGrade').value.trim() || undefined;
+  let size = document.getElementById('newItemSize').value;
+  if(size==='custom') size = document.getElementById('newItemSizeCustom').value.trim() || 'Custom';
+  const unitsPerCase = parseFloat(document.getElementById('newItemUnitsPerCase').value) || 1;
+  const oilPerUnitKg = parseFloat(document.getElementById('newItemOilPerUnit').value) || 0;
+  const linkedContainerId = document.getElementById('newItemLinkedContainer').value || undefined;
+  const linkedLabelId = document.getElementById('newItemLinkedLabel').value || undefined;
+  const linkedCartonId = document.getElementById('newItemLinkedCarton').value || undefined;
+
+  if(!name){ showToast('Please enter an item name.', true); return; }
+  if(category==='finished-goods' && !linkedContainerId){ showToast('Please select a Linked Empty Container for this finished good.', true); return; }
+
+  let unit = document.getElementById('newItemUnit').value;
+  if(category==='bulk-oil'){
+    unit='KG';
+    const entryUnit = document.getElementById('newItemQtyUnit').value;
+    if(entryUnit==='MT') qty = qty*1000;
+  }
+  if(category==='finished-goods'){ unit = unitsPerCase>1 ? 'Cases' : 'Units'; }
+
+  const newItem = {id:uid('item'), name, category, brand, qty, unit, threshold, image: uploadedImageBase64||null};
+  if(category==='bulk-oil' && grade) newItem.grade = grade;
+  if(category==='containers'||category==='labels'||category==='cartons') newItem.size = size;
+  if(category==='containers' && capacityKg) newItem.fillingCapacityKg = capacityKg;
+  if(category==='cartons' && cartonRatio) newItem.bottlesPerCarton = cartonRatio;
+  if(category==='finished-goods'){
+    newItem.unitsPerCase = unitsPerCase;
+    newItem.oilPerUnitKg = oilPerUnitKg;
+    newItem.linkedContainerId = linkedContainerId;
+    newItem.linkedLabelId = linkedLabelId || null;
+    newItem.linkedCartonId = linkedCartonId || null;
+  }
+
+  state.items.push(newItem);
+  addLog('in', newItem.id, qty, 'Initial stock — item created');
+  saveState(state);
+
+  document.getElementById('newItemName').value='';
+  document.getElementById('newItemBrand').value='';
+  document.getElementById('newItemGrade').value='';
+  document.getElementById('newItemQty').value='';
+  document.getElementById('newItemThreshold').value='';
+  document.getElementById('newItemCapacity').value='';
+  document.getElementById('newItemCartonRatio').value='';
+  document.getElementById('newItemSizeCustom').value='';
+  document.getElementById('newItemUnitsPerCase').value='';
+  document.getElementById('newItemOilPerUnit').value='';
+  uploadedImageBase64=null;
+  document.getElementById('uploadPreview').style.display='none';
+  newItemImageInput.value='';
+  newItemCategory.value='bulk-oil';
+  updateNewItemFieldVisibility();
+
+  showToast(`"${name}" added to inventory.`);
+  renderStockGrid();
+  renderDashboard();
+  refreshAddNewFormOptions();
+});
+
+/* ============================= HISTORY & REPORTS ============================= */
+let currentRange = 'today';
+document.querySelectorAll('.filter-chip').forEach(chip=>{
+  chip.addEventListener('click', ()=>{
+    document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
+    chip.classList.add('active');
+    currentRange = chip.dataset.range;
+    renderHistory();
+  });
+});
+function getFilteredLogs(){
+  const now = new Date(); let cutoff=null;
+  switch(currentRange){
+    case 'today': cutoff=new Date(now.getFullYear(),now.getMonth(),now.getDate()); break;
+    case 'week': cutoff=new Date(now.getTime()-7*24*3600*1000); break;
+    case 'month': cutoff=new Date(now.getFullYear(),now.getMonth()-1,now.getDate()); break;
+    case '1y': cutoff=new Date(now.getFullYear()-1,now.getMonth(),now.getDate()); break;
+    default: cutoff=null;
+  }
+  if(!cutoff) return state.logs;
+  return state.logs.filter(l=>new Date(l.iso)>=cutoff);
+}
+function renderHistory(){
+  const logs = getFilteredLogs();
+  const wrap = document.getElementById('historyTableWrap');
+  if(logs.length===0){ wrap.innerHTML = `<div class="empty-msg">No transactions found for this period.</div>`; return; }
+  wrap.innerHTML = `
+    <table class="history">
+      <thead><tr><th>Date</th><th>Time</th><th>Action</th><th>Brand</th><th>Item</th><th>Qty Change</th><th>Note</th></tr></thead>
+      <tbody>
+        ${logs.map(l=>`
+          <tr>
+            <td>${l.date}</td><td>${l.time}</td>
+            <td class="${l.action==='in'?'tag-in':'tag-out'}">${l.action==='in'?'IN':'OUT'}</td>
+            <td>${l.brand||DEFAULT_BRAND}</td>
+            <td>${l.itemName}${l.grade?` (${l.grade})`:''}</td>
+            <td>${l.action==='in'?'+':'-'}${l.itemCategory==='bulk-oil'?formatBulkOil(l.qty):fmt(l.qty)}</td>
+            <td>${l.note||'—'}</td>
+          </tr>`).join('')}
+      </tbody>
+    </table>
+  `;
+}
+document.getElementById('exportCsvBtn').addEventListener('click', ()=>{
+  const logs = getFilteredLogs();
+  if(logs.length===0){ showToast('No data to export for this period.', true); return; }
+  let csv = 'Date,Time,Action,Brand,Item,Grade,Quantity Change,Unit,Note\n';
+  logs.forEach(l=>{
+    const unit = l.itemCategory==='bulk-oil' ? 'KG' : (findItem(l.itemId)?.unit || '');
+    const row = [l.date,l.time,l.action==='in'?'IN':'OUT',
+      `"${(l.brand||DEFAULT_BRAND).replace(/"/g,'""')}"`,
+      `"${l.itemName.replace(/"/g,'""')}"`,
+      `"${(l.grade||'').replace(/"/g,'""')}"`,
+      (l.action==='in'?'+':'-')+l.qty, unit,
+      `"${(l.note||'').replace(/"/g,'""')}"`];
+    csv += row.join(',') + '\n';
+  });
+  const blob = new Blob([csv],{type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href=url; a.download=`GreatGlobalSynergy_StockReport_${currentRange}_${Date.now()}.csv`;
+  document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+  showToast('CSV report downloaded.');
+});
+document.getElementById('printPdfBtn').addEventListener('click', ()=>window.print());
+
+/* ============================= INIT ============================= */
+document.getElementById('yearNow').textContent = new Date().getFullYear();
+renderDashboard();
+renderStockGrid();
+renderHistory();
+refreshAddNewFormOptions();
+</script>
+</body>
+</html>
